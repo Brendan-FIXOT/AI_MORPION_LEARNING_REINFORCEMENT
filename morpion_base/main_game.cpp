@@ -8,13 +8,15 @@ int main() {
 
     load_Q_table("../save_training/IA_1.dat");
 
+    print_Q_table();
+
     // Initialisation du tableau avec que des 0
     std::vector<int> board(9);
 
     // Définitions des paramètres d'apprentissage
     float alpha_parameter = 0.1;   // taux d'apprentissage
     float gamma_parameter = 0.9;   // Facteur d'actualisation
-    float epsilon_parameter = 0.5; // Paramètre d'exploration
+    float epsilon_parameter = 0.1; // Paramètre d'exploration
 
     for (int turn = 0; turn < 9; ++turn) {
         
@@ -33,6 +35,7 @@ int main() {
         if (currentPlayer == player2IA) {
             do {
                 chosen_action = action_choice(board, epsilon_parameter); // Choisir une action selon la Q-table
+                std::cout << chosen_action << std::endl;
             } while (board[chosen_action] != 0);
             board[chosen_action] = -1;
             std::cout << "L'IA a joué en : " << chosen_action << std::endl;

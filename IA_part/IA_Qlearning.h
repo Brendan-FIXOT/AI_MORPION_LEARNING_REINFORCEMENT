@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <fstream>   // pour std::ofstream et std::ifstream
 #include <sstream>   // pour std::stringstream
+#include "../morpion_base/tab_morpion.h"
 
 using State = std::vector<int>; // état du plateau
 using Action = int; // action, représentant une case de 0 à 8
@@ -22,6 +23,11 @@ void load_Q_table(const std::string &filename);
 void update_Q_value(const State& state, Action action, float reward, const State& next_state, float alpha_parameter, float gamma_parameter);
 
 // Fonction pour choisir une action à partir d'un état donné (exploration/exploitation)
-Action action_choice(const State& state, float epsilon_param);
+Action action_choice(State state, float epsilon_param);
+
+std::vector<bool> convert_state_to_bool(const State& state);
+
+bool not_block(State state, Action choosen_action, int player_sign);
+void print_Q_table();
 
 #endif // IA_QLEARNING_H

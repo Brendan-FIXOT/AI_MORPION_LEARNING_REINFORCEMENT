@@ -69,7 +69,7 @@ void update_Q_value(const State& state, Action action, float reward, const State
     Q[{state, action}] = current_Q + alpha_parameter * (reward + gamma_parameter * next_max_Q - current_Q);
 }
 
-Action action_choice(const State& state, float epsilon_param) {
+Action action_choice(State state, float epsilon_param) {
     if ((float)rand() / RAND_MAX < epsilon_param) {
         // Choisit une action aléatoire (exploration)
         Action random_action;
@@ -84,11 +84,55 @@ Action action_choice(const State& state, float epsilon_param) {
         float Q_corresponding;
         for(Action action = 0; action < 9; ++action) {
             Q_corresponding = get_Q_value(state, action);
-            if (Q_corresponding > best_Q) {
+            if (Q_corresponding > best_Q && state[action] == 0) {
                 best_Q = Q_corresponding;
                 best_action = action;
             }
         }
         return best_action;
+    }
+}
+
+bool not_block(State state, Action choosen_action, int player_sign) {
+    // Vérifier si l'adversaire peut gagner au prochain tour
+    for (int i = 0; i < 9; ++i) {
+        if (state[i] == 0) { // Case libre
+            State new_state = state;
+            new_state[i] = -player_sign; // Simuler le coup de l'adversaire (supposant qu'il joue avec -1)
+            if (check_win(new_state) && choosen_action != i) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+std::vector<bool> convert_state_to_bool(const State& state) {
+    std::vector<bool> available_action;
+    for (Action action = 0; action < 9; ++action) {
+        if (state[action] != 0) {
+            available_action[action] = false;
+        }
+    }
+    return available_action;
+}
+
+void print_Q_table() {
+    std::cout << "Contenu de la Q-table :" << std::endl;
+    for (const auto& entry : Q) {
+        const State& state = entry.first.first;
+        Action action = entry.first.second;
+        float q_value = entry.second;
+
+        // Afficher l'état sous forme de grille 3x3
+        std::cout << "État : ";
+        for (int i = 0; i < state.size(); ++i) {
+            std::cout << state[i] << ((i % 3 == 2) ? "\n" : " ");
+        }
+
+        // Afficher l'action et la valeur Q
+        std::cout << "Action : " << action << " | Valeur Q : " << q_value << std::endl;
+        std::cout << "--------------------------" << std::endl;
     }
 }
