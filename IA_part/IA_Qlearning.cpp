@@ -1,15 +1,12 @@
 #include "IA_Qlearning.h"
 
-// Table Q
-std::map<std::pair<State, Action>, float> Q;
-
 // récupérer la table Q
-float get_Q_value(const State& state, Action action) {
-    return Q[{state, action}];
+float Qclass::get_Q_value(const State& state, Action action) {
+    return Qclass::Q[{state, action}];
 }
 
 // Fonction pour sauvegarder la Q-table dans un fichier
-void save_Q_table(const std::string &filename) {
+void Qclass::save_Q_table(const std::string &filename) {
     std::ofstream file(filename, std::ios::out); // permet de ne pas supprimer le contenu du fichier
     if (!file.is_open()) {
         std::cerr << "Erreur lors de l'ouverture du fichier pour la sauvegarde !" << std::endl;
@@ -32,7 +29,7 @@ void save_Q_table(const std::string &filename) {
 }
 
 // Fonction pour charger la Q-table depuis un fichier
-void load_Q_table(const std::string &filename) {
+void Qclass::load_Q_table(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Erreur lors de l'ouverture du fichier pour le chargement !" << std::endl;
@@ -59,7 +56,7 @@ void load_Q_table(const std::string &filename) {
 }
 
 
-void update_Q_value(const State& state, Action action, float reward, const State& next_state, float alpha_parameter, float gamma_parameter) {
+void Qclass::update_Q_value(const State& state, Action action, float reward, const State& next_state, float alpha_parameter, float gamma_parameter) {
     float next_max_Q = -std::numeric_limits<float>::infinity(); // iniatialisé au floatant le plus petit possible
     // Boucle sur les 9 actions possibles
     for(Action next_action = 0; next_action < 9; ++next_action) {
@@ -69,7 +66,7 @@ void update_Q_value(const State& state, Action action, float reward, const State
     Q[{state, action}] = current_Q + alpha_parameter * (reward + gamma_parameter * next_max_Q - current_Q);
 }
 
-Action action_choice(State state, float epsilon_param) {
+Action Qclass::action_choice(State state, float epsilon_param) {
     if ((float)rand() / RAND_MAX < epsilon_param) {
         // Choisit une action aléatoire (exploration)
         Action random_action;
@@ -93,32 +90,7 @@ Action action_choice(State state, float epsilon_param) {
     }
 }
 
-bool not_block(State state, Action choosen_action, int player_sign) {
-    // Vérifier si l'adversaire peut gagner au prochain tour
-    for (int i = 0; i < 9; ++i) {
-        if (state[i] == 0) { // Case libre
-            State new_state = state;
-            new_state[i] = -player_sign; // Simuler le coup de l'adversaire (supposant qu'il joue avec -1)
-            if (check_win(new_state) && choosen_action != i) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-
-std::vector<bool> convert_state_to_bool(const State& state) {
-    std::vector<bool> available_action;
-    for (Action action = 0; action < 9; ++action) {
-        if (state[action] != 0) {
-            available_action[action] = false;
-        }
-    }
-    return available_action;
-}
-
-void print_Q_table() {
+void Qclass::print_Q_table() {
     std::cout << "Contenu de la Q-table :" << std::endl;
     for (const auto& entry : Q) {
         const State& state = entry.first.first;

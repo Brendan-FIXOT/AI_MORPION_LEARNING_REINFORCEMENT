@@ -7,15 +7,20 @@
 #include <cmath>
 #include <random>
 
-std::vector<int> morpion_choice(std::vector<int> board, int player);
+class BaseClass {
+public :
+    BaseClass() {}
 
-bool check_win(std::vector<int> board);
+    std::vector<int> morpion_choice(std::vector<int> board, int player);
 
-std::string interface_board(std::vector<int> board);
+    bool check_win(std::vector<int> board);
 
-float relu(float x);
+    std::string interface_board(std::vector<int> board);
 
-std::vector<float> softmax(const std::vector<float>& outputs);
+    float relu(float x);
 
+    std::vector<float> softmax(const std::vector<float>& outputs);
+
+};
 
 #endif // TAB_MORPION_H

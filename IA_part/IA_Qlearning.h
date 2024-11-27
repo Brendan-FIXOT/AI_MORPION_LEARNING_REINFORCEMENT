@@ -13,21 +13,26 @@
 using State = std::vector<int>; // état du plateau
 using Action = int; // action, représentant une case de 0 à 8
 
-// Fonction pour obtenir la valeur de Q pour un état et une action
-float get_Q_value(const State& state, Action action);
+class Qclass {
+private :
+    // Table Q
+    std::map<std::pair<State, Action>, float> Q;
+public :
+    Qclass() {}
+    // Fonction pour obtenir la valeur de Q pour un état et une action
+    float get_Q_value(const State& state, Action action);
 
-void save_Q_table(const std::string &filename);
-void load_Q_table(const std::string &filename);
+    void save_Q_table(const std::string &filename);
+    void load_Q_table(const std::string &filename);
 
-// Fonction pour mettre à jour la valeur de Q pour un état, une action, une récompense et un état suivant
-void update_Q_value(const State& state, Action action, float reward, const State& next_state, float alpha_parameter, float gamma_parameter);
+    // Fonction pour mettre à jour la valeur de Q pour un état, une action, une récompense et un état suivant
+    void update_Q_value(const State& state, Action action, float reward, const State& next_state, float alpha_parameter, float gamma_parameter);
 
-// Fonction pour choisir une action à partir d'un état donné (exploration/exploitation)
-Action action_choice(State state, float epsilon_param);
+    // Fonction pour choisir une action à partir d'un état donné (exploration/exploitation)
+    Action action_choice(State state, float epsilon_param);
+    
+    void print_Q_table();
 
-std::vector<bool> convert_state_to_bool(const State& state);
-
-bool not_block(State state, Action choosen_action, int player_sign);
-void print_Q_table();
+};
 
 #endif // IA_QLEARNING_H

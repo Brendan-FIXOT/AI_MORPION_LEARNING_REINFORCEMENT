@@ -2,13 +2,16 @@
 #include "tab_morpion.h"
 
 int main() {
+    Qclass Q;
+    BaseClass Base;
+
     int currentPlayer;
     int player1 = 1, player2IA = 2;
     Action chosen_action;
 
-    load_Q_table("../save_training/IA_1.dat");
+    Q.load_Q_table("../save_training/IA_1.dat");
 
-    print_Q_table();
+    //Q.print_Q_table();
 
     // Initialisation du tableau avec que des 0
     std::vector<int> board(9);
@@ -24,17 +27,17 @@ int main() {
         currentPlayer = (turn % 2 == 0) ? player1 : player2IA;
         
         // Affichage du tableau
-        std::cout << interface_board(board) << std::endl;
+        std::cout << Base.interface_board(board) << std::endl;
 
         // Affichage du joueur qui doit jouer
         std::cout << "Joueur " << currentPlayer << ", choisi entre 0 et 8 : " << std::endl;
 
         if (currentPlayer == player1) {
-            board = morpion_choice(board, currentPlayer);
+            board = Base.morpion_choice(board, currentPlayer);
         }
         if (currentPlayer == player2IA) {
             do {
-                chosen_action = action_choice(board, epsilon_parameter); // Choisir une action selon la Q-table
+                chosen_action = Q.action_choice(board, epsilon_parameter); // Choisir une action selon la Q-table
                 std::cout << chosen_action << std::endl;
             } while (board[chosen_action] != 0);
             board[chosen_action] = -1;
@@ -42,24 +45,24 @@ int main() {
         }
     
         // Vérifier si le joueur actuel gagne
-        if (check_win(board)) {
+        if (Base.check_win(board)) {
             if (currentPlayer == player2IA) {
                 float reward = 1.0;
-                update_Q_value(board, chosen_action, reward, board, alpha_parameter, gamma_parameter);
+                Q.update_Q_value(board, chosen_action, reward, board, alpha_parameter, gamma_parameter);
             } else {
                 float reward = -1.0;
-                update_Q_value(board, chosen_action, reward, board, alpha_parameter, gamma_parameter); // Màj des Q-valeurs pour le gagnant
+                Q.update_Q_value(board, chosen_action, reward, board, alpha_parameter, gamma_parameter); // Màj des Q-valeurs pour le gagnant
             }
             std::cout << "Partie Terminée, Joueur " << currentPlayer << " gagnant !" << std::endl;
             // Affichage du tableau en fin de partie
-            std::cout << interface_board(board) << std::endl;
+            std::cout << Base.interface_board(board) << std::endl;
             break;
         }
 
         // Si on arrive au dernier tour sans gagnant
         if (turn == 8) {
             float reward = 0.0;
-            update_Q_value(board, chosen_action, reward, board, alpha_parameter, gamma_parameter);
+            Q.update_Q_value(board, chosen_action, reward, board, alpha_parameter, gamma_parameter);
             std::cout << "Partie Terminée, égalité !" << std::endl;
         }
     }

@@ -1,6 +1,6 @@
 #include "tab_morpion.h"
 
-std::vector<int> morpion_choice(std::vector<int> board, int player) {
+std::vector<int> BaseClass::morpion_choice(std::vector<int> board, int player) {
     
     int index;
     bool finished = false;
@@ -27,7 +27,7 @@ std::vector<int> morpion_choice(std::vector<int> board, int player) {
     return board;
 }
 
-bool check_win(std::vector<int> board) {
+bool BaseClass::check_win(std::vector<int> board) {
     // Pour toutes les lignes
     for (int i = 0; i < 9; i+=3) {
         if (board[i] != 0 && board[i+1] != 0 && board[i+2] != 0 &&
@@ -51,7 +51,7 @@ bool check_win(std::vector<int> board) {
     return false;
 }
 
-std::string interface_board(std::vector<int> board) {
+std::string BaseClass::interface_board(std::vector<int> board) {
     std::string interface;
 
     // Vérifié si board en entrée est bien de la bonne taille
